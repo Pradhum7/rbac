@@ -1,0 +1,69 @@
+spring:
+  application:
+    name: rbac-api
+
+  datasource:
+    # Changed to MySQL URL, Username, and Password
+    url: jdbc:mysql://localhost:3306/rbac_db?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&useSSL=false
+    username: root
+    password: Pass@123
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      connection-timeout: 20000
+      idle-timeout: 300000
+      max-lifetime: 1200000
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        # Changed Dialect to MySQL
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+        use_sql_comments: true
+    open-in-view: false
+
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    time-zone: UTC
+
+# JWT Configuration
+jwt:
+  secret: ${JWT_SECRET:your_jwt_secret_key_at_least_256_bits_long_please_change_in_production}
+  expiration: ${JWT_EXPIRATION:900000} # 15 minutes in milliseconds
+  refresh-expiration: ${REFRESH_TOKEN_EXPIRATION:604800000} # 7 days in milliseconds
+
+# Logging Configuration
+logging:
+  level:
+    com.company.rbac: DEBUG
+    org.springframework.security: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+# Server Configuration
+server:
+  port: 8080
+  error:
+    include-message: always
+    include-binding-errors: always
+    include-stacktrace: never
+    include-exception: false
+
+# Actuator Configuration
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: when-authorized
